@@ -4,7 +4,7 @@ Plik comes with a simple Dockerfile that allows you to run it inside a docker co
 ##### Getting image from docker registry
 
 ```sh
-$ docker pull rootgg/plik:latest
+$ docker pull ghcr.io/root-gg/plik:latest
 ```
 
 ##### Building the docker image
@@ -18,21 +18,21 @@ $ make docker
 
 Then you can run an instance and map the local port 8080 to the plik port :   
 ```sh
-$ docker run -t -d -p 8080:8080 rootgg/plik
+$ docker run -t -d -p 8080:8080 ghcr.io/root-gg/plik
 ab9b2c99da1f3e309cd3b12392b9084b5cafcca0325d7d47ff76f5b1e475d1b9
 ```
 
 To use a different config file, you can map a single file to the container at runtime :   
 Here, we map local folder plikd.cfg to the home/plik/server/plikd.cfg which is the default config file location in the container :   
 ```sh
-$ docker run -t -d -p 8080:8080 -v plikd.cfg:/home/plik/server/plikd.cfg rootgg/plik
+$ docker run -t -d -p 8080:8080 -v plikd.cfg:/home/plik/server/plikd.cfg ghcr.io/root-gg/plik
 ab9b2c99da1f3e309cd3b12392b9084b5cafcca0325d7d47ff76f5b1e475d1b9
 ```
 
 You can also use a volume to store uploads outside the container :   
 Here, we map local folder /data to the /home/plik/server/files folder of the container which is the default upload directory :   
 ```sh
-$ docker run -t -d -p 8080:8080 -v /data:/home/plik/server/files rootgg/plik
+$ docker run -t -d -p 8080:8080 -v /data:/home/plik/server/files ghcr.io/root-gg/plik
 ab9b2c99da1f3e309cd3b12392b9084b5cafcca0325d7d47ff76f5b1e475d1b9
 ```
 
@@ -45,10 +45,11 @@ Adjust directories to your like.
 ```
 $ cd ~
 $ mkdir plik
-$ curl https://raw.githubusercontent.com/root-gg/plik/master/server/plikd.cfg # copy server configuration
-$ plik mkdir data # create directory to save files and/or metadata outside of the docker image
-$ plik chown 1000:1000 data # match UIDs with docker
-$ plik chown 1000:1000 plikd.cfg # match UIDs with docker
+$ cd plik
+$ curl -LO https://raw.githubusercontent.com/root-gg/plik/refs/heads/master/server/plikd.cfg # copy server configuration
+$ mkdir data # create directory to save files and/or metadata outside of the docker image
+$ chown 1000:1000 data # match UIDs with docker
+$ chown 1000:1000 plikd.cfg # match UIDs with docker
 ```
 
 Edit plikd.cfg to point the metadata and/or data to a mountpoint that you can match in docker-compose (/data in this example)
@@ -67,7 +68,7 @@ Create a docker-compose.yml file with the following content
 version: "2"
 services:
   plik:
-    image: rootgg/plik:latest
+    image: ghcr.io/root-gg/plik:latest
     container_name: plik
     volumes:
       - /home/{user}/plik/plikd.cfg:/home/plik/server/plikd.cfg

@@ -115,7 +115,7 @@ test-backends:
 # Build a docker image locally
 ###
 docker:
-	@docker buildx build --progress=plain --load -t rootgg/plik:dev .
+	@docker buildx build --progress=plain --load -t ghcr.io/root-gg/plik:dev .
 
 ###
 # Create release archives
@@ -124,10 +124,10 @@ release:
 	@releaser/release.sh
 
 ###
-# Create release archives, build a multiarch Docker image and push to Docker Hub
+# Create release archives, build a multiarch Docker image and push to registry
 ###
-release-and-push-to-docker-hub:
-	@PUSH_TO_DOCKER_HUB=true releaser/release.sh
+release-and-push:
+	@PUSH=true releaser/release.sh
 
 ###
 # Remove server build files
@@ -158,4 +158,4 @@ clean-all: clean clean-frontend
 # by make, we must declare these targets as phony to avoid :
 # "make: `client' is up to date" cases at compile time
 ###
-.PHONY: client clients server release
+.PHONY: client clients server release release-and-push

@@ -23,9 +23,19 @@ else
   echo "!!! Release is not tagged !!!"
 fi
 
-DOCKER_IMAGE=${DOCKER_IMAGE:-rootgg/plik}
+DOCKER_IMAGE=${DOCKER_IMAGE:-ghcr.io/root-gg/plik}
 DOCKER_TAG=${TAG:-dev}
 TARGETS=${TARGETS:-linux/amd64,linux/i386,linux/arm64,linux/arm}
+
+BUILD_ARGS=""
+EXTRA_ARGS=""
+COMMIT_HASH=$(git rev-parse --short HEAD 2>/dev/null || echo "00000000")
+DIRTY=$(git diff-files --quiet && git diff-index --cached --quiet HEAD 2>/dev/null || echo '-dirty')
+BUILD_TIMESTAMP=$(date -u '+%Y-%m-%dT%H:%M:%SZ')
+
+BUILD_ARGS="$BUILD_ARGS --build-arg BUILD_TIMESTAMP=$BUILD_TIMESTAMP"
+BUILD_ARGS="$BUILD_ARGS --build-arg COMMIT_HASH=${COMMIT_HASH}${DIRTY}"
+BUILD_ARGS="$BUILD_ARGS --build-arg VERSION=$VERSION"
 
 if [[ -n "$CLIENT_TARGETS" ]]; then
   BUILD_ARGS="$BUILD_ARGS --build-arg CLIENT_TARGETS=$CLIENT_TARGETS"
@@ -35,8 +45,12 @@ if [[ -n "$CC" ]]; then
   BUILD_ARGS="$BUILD_ARGS --build-arg CC=$CC"
 fi
 
-# Build docker multi arch and push to docker hub (requires docker login first)
-if [[ -n "$PUSH_TO_DOCKER_HUB" ]]; then
+if [[ -n "$SOURCE_URL" ]]; then
+  BUILD_ARGS="$BUILD_ARGS --build-arg SOURCE_URL=$SOURCE_URL"
+fi
+
+# Build docker multi arch and push to registry (requires docker login first)
+if [[ -n "$PUSH" ]]; then
   EXTRA_ARGS="-t $DOCKER_IMAGE:$DOCKER_TAG"
   if [[ "$RELEASE" == "true" ]]; then
     EXTRA_ARGS="$EXTRA_ARGS -t $DOCKER_IMAGE:$VERSION -t $DOCKER_IMAGE:latest"

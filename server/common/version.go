@@ -48,6 +48,7 @@ type BuildInfo struct {
 	IsMint    bool `json:"isMint"`
 
 	GoVersion string `json:"goVersion,omitempty"`
+	SourceURL string `json:"sourceUrl,omitempty"`
 
 	Clients  []*Client  `json:"clients"`
 	Releases []*Release `json:"releases"`
@@ -82,6 +83,7 @@ func GetBuildInfo() (bi *BuildInfo) {
 }
 
 // Sanitize removes sensitive info from BuildInfo
+// SourceURL is cleared here but intentionally re-exposed via the /config endpoint for the webapp
 func (bi *BuildInfo) Sanitize() {
 	// Version is needed for the client update to work
 	bi.Date = 0
@@ -92,6 +94,7 @@ func (bi *BuildInfo) Sanitize() {
 	bi.IsRelease = false
 	bi.IsMint = false
 	bi.GoVersion = ""
+	bi.SourceURL = ""
 }
 
 func (bi *BuildInfo) String() string {

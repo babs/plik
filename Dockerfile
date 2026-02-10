@@ -24,7 +24,9 @@ WORKDIR /go/src/github.com/root-gg/plik
 COPY --from=plik-frontend-builder /webapp/dist webapp/dist
 
 ARG CLIENT_TARGETS=""
+ARG SOURCE_URL=""
 ENV CLIENT_TARGETS=$CLIENT_TARGETS
+ENV SOURCE_URL=$SOURCE_URL
 
 ARG TARGETOS TARGETARCH TARGETVARIANT CC
 ENV TARGETOS=$TARGETOS
@@ -44,6 +46,16 @@ COPY --from=plik-builder --chown=1000:1000 /go/src/github.com/root-gg/plik/plik-
 
 ##################################################################################
 FROM alpine:3.18 AS plik-image
+
+ARG BUILD_TIMESTAMP="1970-01-01T00:00:00+00:00"
+ARG COMMIT_HASH="00000000-dirty"
+ARG SOURCE_URL=""
+ARG VERSION="v0.0.0"
+
+LABEL org.opencontainers.image.source=${SOURCE_URL}
+LABEL org.opencontainers.image.created=${BUILD_TIMESTAMP}
+LABEL org.opencontainers.image.version=${VERSION}
+LABEL org.opencontainers.image.revision=${COMMIT_HASH}
 
 RUN apk add --no-cache ca-certificates
 

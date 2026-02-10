@@ -52,6 +52,11 @@ if is_mint_repo; then
     isMint=true
 fi
 
+# Source URL from environment or git remote
+if [[ -z "${SOURCE_URL:-}" ]]; then
+  SOURCE_URL=$(git remote get-url origin 2>/dev/null || echo "")
+fi
+
 if [[ "$output" == "info" ]]; then
   echo "Plik $version built with $goVersion"
   echo "Commit $full_rev mint=$isMint release=$isRelease"
@@ -122,6 +127,8 @@ json=$(cat << EOF
   "gitFullRevision" : "$full_rev",
   "isRelease" : $isRelease,
   "isMint" : $isMint,
+
+  "sourceUrl" : "$SOURCE_URL",
 
   "clients" : $clients_json,
   "releases" : $releases_json
