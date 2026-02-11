@@ -191,6 +191,13 @@ func (ps *PlikServer) start() (err error) {
 		return fmt.Errorf("unable to initialize session authenticator : %s", err)
 	}
 
+	if ps.config.OIDCAuthentication {
+		err = handlers.InitOIDCDiscovery(ps.config.OIDCProviderURL)
+		if err != nil {
+			return fmt.Errorf("unable to initialize OIDC provider : %s", err)
+		}
+	}
+
 	if ps.config.IsAutoClean() {
 		go ps.uploadsCleaningRoutine()
 	}
@@ -348,6 +355,8 @@ func (ps *PlikServer) getHTTPHandler() (handler http.Handler) {
 	router.Handle("/auth/google/callback", stdChainWithRedirect.Then(handlers.GoogleCallback)).Methods("GET")
 	router.Handle("/auth/ovh/login", authChain.Then(handlers.OvhLogin)).Methods("GET")
 	router.Handle("/auth/ovh/callback", stdChainWithRedirect.Then(handlers.OvhCallback)).Methods("GET")
+	router.Handle("/auth/oidc/login", authChain.Then(handlers.OIDCLogin)).Methods("GET")
+	router.Handle("/auth/oidc/callback", stdChainWithRedirect.Then(handlers.OIDCCallback)).Methods("GET")
 	router.Handle("/auth/local/login", authChain.Then(handlers.LocalLogin)).Methods("POST")
 	router.Handle("/auth/logout", stdChain.Then(handlers.Logout)).Methods("GET")
 

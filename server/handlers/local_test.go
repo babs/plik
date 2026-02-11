@@ -15,6 +15,7 @@ import (
 func TestLocalLogin(t *testing.T) {
 	ctx := newTestingContext(common.NewConfiguration())
 	ctx.GetConfig().FeatureAuthentication = common.FeatureEnabled
+	ctx.GetConfig().LocalAuthentication = true
 
 	user := common.NewUser(common.ProviderLocal, "user")
 	user.Name = "user"
@@ -62,9 +63,25 @@ func TestLocalLoginAuthDisabled(t *testing.T) {
 	context.TestBadRequest(t, rr, "authentication is disabled")
 }
 
+func TestLocalLoginLocalAuthDisabled(t *testing.T) {
+	ctx := newTestingContext(common.NewConfiguration())
+	ctx.GetConfig().FeatureAuthentication = common.FeatureEnabled
+	ctx.GetConfig().LocalAuthentication = false
+
+	credentials, _ := utils.ToJson(struct{ Login, Password string }{"user", "password"})
+	req, err := http.NewRequest("GET", "/auth/local/login", bytes.NewBuffer(credentials))
+	require.NoError(t, err, "unable to create new request")
+
+	rr := ctx.NewRecorder(req)
+	LocalLogin(ctx, rr, req)
+
+	context.TestBadRequest(t, rr, "local authentication is disabled")
+}
+
 func TestLocalLoginInvalidJSON(t *testing.T) {
 	ctx := newTestingContext(common.NewConfiguration())
 	ctx.GetConfig().FeatureAuthentication = common.FeatureEnabled
+	ctx.GetConfig().LocalAuthentication = true
 
 	req, err := http.NewRequest("GET", "/auth/local/login", bytes.NewBuffer([]byte("blah")))
 	require.NoError(t, err, "unable to create new request")
@@ -78,6 +95,7 @@ func TestLocalLoginInvalidJSON(t *testing.T) {
 func TestLocalLoginMissingLogin(t *testing.T) {
 	ctx := newTestingContext(common.NewConfiguration())
 	ctx.GetConfig().FeatureAuthentication = common.FeatureEnabled
+	ctx.GetConfig().LocalAuthentication = true
 
 	credentials, _ := utils.ToJson(struct{ Password string }{"password"})
 	req, err := http.NewRequest("GET", "/auth/local/login", bytes.NewBuffer(credentials))
@@ -92,6 +110,7 @@ func TestLocalLoginMissingLogin(t *testing.T) {
 func TestLocalLoginMissingPassword(t *testing.T) {
 	ctx := newTestingContext(common.NewConfiguration())
 	ctx.GetConfig().FeatureAuthentication = common.FeatureEnabled
+	ctx.GetConfig().LocalAuthentication = true
 
 	credentials, _ := utils.ToJson(struct{ Login string }{"user"})
 	req, err := http.NewRequest("GET", "/auth/local/login", bytes.NewBuffer(credentials))
@@ -106,6 +125,7 @@ func TestLocalLoginMissingPassword(t *testing.T) {
 func TestLocalLoginMissingUser(t *testing.T) {
 	ctx := newTestingContext(common.NewConfiguration())
 	ctx.GetConfig().FeatureAuthentication = common.FeatureEnabled
+	ctx.GetConfig().LocalAuthentication = true
 
 	credentials, _ := utils.ToJson(struct{ Login, Password string }{"user", "invalid"})
 	req, err := http.NewRequest("GET", "/auth/local/login", bytes.NewBuffer(credentials))
@@ -120,6 +140,7 @@ func TestLocalLoginMissingUser(t *testing.T) {
 func TestLocalLoginInvalidPassword(t *testing.T) {
 	ctx := newTestingContext(common.NewConfiguration())
 	ctx.GetConfig().FeatureAuthentication = common.FeatureEnabled
+	ctx.GetConfig().LocalAuthentication = true
 
 	user := common.NewUser(common.ProviderLocal, "user")
 	user.Name = "user"

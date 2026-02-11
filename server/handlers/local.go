@@ -24,6 +24,11 @@ func LocalLogin(ctx *context.Context, resp http.ResponseWriter, req *http.Reques
 		return
 	}
 
+	if !config.LocalAuthentication {
+		ctx.BadRequest("local authentication is disabled")
+		return
+	}
+
 	// Read request body
 	defer func() { _ = req.Body.Close() }()
 	req.Body = http.MaxBytesReader(resp, req.Body, 1048576)

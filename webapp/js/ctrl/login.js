@@ -57,6 +57,17 @@ plik.controller('LoginCtrl', ['$scope', '$api', '$config', '$location', '$dialog
                 });
         };
 
+        // OIDC authentication
+        $scope.oidc = function () {
+            $api.login("oidc")
+                .then(function (url) {
+                    window.location.replace(url);
+                })
+                .then(null, function (error) {
+                    $dialog.alert(error);
+                });
+        };
+
         // Login with local user
         $scope.login = function () {
             $api.login("local", $scope.username, $scope.password)

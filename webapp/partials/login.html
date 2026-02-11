@@ -4,7 +4,7 @@
 <div class="row" ng-if="!user">
     <div class="col-xs-12 col-sm-4 col-md-4 col-lg-4 col-centered">
         <div class="tile panel panel-body main">
-            <div class="row">
+            <div class="row" ng-show="config.localAuthentication">
                 <div class="col-sm-12 text-center">
                     <div class="row">
                         <div class="col-sm-11 col-sm-offset-1">
@@ -56,6 +56,13 @@
                         <button title="OVH" type="button" class="btn btn-primary" ng-click="ovh()">
                             <span class="fa fa-circle-o"></span>
                             Login with OVH
+                        </button>
+                    </div>
+                    <!-- OIDC BUTTON -->
+                    <div class="text-center auth-btn" ng-show="config.oidcAuthentication">
+                        <button title="OIDC" type="button" class="btn btn-primary" ng-click="oidc()">
+                            <span class="fa fa-openid"></span>
+                            Login with {{ config.oidcProviderName }}
                         </button>
                     </div>
                 </div>

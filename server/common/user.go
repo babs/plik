@@ -11,6 +11,9 @@ const ProviderGoogle = "google"
 // ProviderOVH for authentication
 const ProviderOVH = "ovh"
 
+// ProviderOIDC for authentication
+const ProviderOIDC = "oidc"
+
 // ProviderLocal for authentication
 const ProviderLocal = "local"
 
@@ -49,7 +52,7 @@ func GetUserID(provider string, providerID string) string {
 // IsValidProvider return true if the provider string is valid
 func IsValidProvider(provider string) bool {
 	switch provider {
-	case ProviderLocal, ProviderGoogle, ProviderOVH:
+	case ProviderLocal, ProviderGoogle, ProviderOVH, ProviderOIDC:
 		return true
 	default:
 		return false

@@ -22,7 +22,7 @@ Plik is a scalable & friendly temporary file upload system (Wetransfer like) in 
    - TTL : Custom expiration date
    - Password : Protect upload with login/password (Auth Basic)
    - Comments : Add custom message (in Markdown format)
-   - User authentication : Local / Google / OVH
+   - User authentication : Local / Google / OVH / OpenID Connect
    - Upload restriction : Source IP / Token
    - Administrator CLI and web UI
    - Server side encryption (with S3 data backend)
@@ -230,7 +230,7 @@ See help for more details
    
 ### Authentication <a name="authentication"></a>
 
-Plik can authenticate users using Local accounts or using Google or OVH APIs.
+Plik can authenticate users using Local accounts or using Google, OVH or OpenID Connect (OIDC) APIs.
  
 To enable authentication set FeatureAuthentication to "enabled" in plikd.cfg
 To only allow authenticated users to upload files set FeatureAuthentication to "forced" in plikd.cfg
@@ -239,6 +239,8 @@ If source IP address restriction is enabled, user accounts can only be created f
 authenticated users can upload files without source IP restriction.
 
 Admin users can access the admin dashboard and manipulate every uploads.
+
+Local login can be hidden by setting `DisableLocalLogin` to `true` in plikd.cfg. This hides the login/password form and rejects local login attempts, useful when relying solely on an external provider (Google, OVH, OIDC).
 
    - **Local** :
       - You can manipulate local users with the server command line
@@ -257,6 +259,14 @@ Admin users can access the admin dashboard and manipulate every uploads.
    - **OVH** :
       - You'll need to create a new application in the OVH API : https://eu.api.ovh.com/createApp/
       - You'll be handed an OVH application key and an OVH application secret key that you'll need to put in the plikd.cfg file.
+
+   - **OpenID Connect** :
+      - Configure your OIDC provider (Keycloak, Authentik, Dex, etc.) and create a client application.
+      - Set the redirect URI to `https://yourdomain/auth/oidc/callback`.
+      - Set `OIDCClientID`, `OIDCClientSecret` and `OIDCProviderURL` in plikd.cfg. The provider URL must expose a `/.well-known/openid-configuration` endpoint.
+      - Optionally set `OIDCProviderName` to customize the login button label (defaults to "OpenID").
+      - Optionally set `OIDCValidDomains` to restrict login to specific email domains (e.g. `["company.com"]`).
+      - Set `DisableLocalLogin` to `true` to hide the local login form and use OIDC exclusively.
 
 Once authenticated a user can generate upload tokens that can be specified in the ~/.plikrc file to authenticate
 the command line client.

@@ -49,7 +49,7 @@ func init() {
 	rootCmd.AddCommand(tokenCmd)
 
 	// Here you will define your flags and configuration settings.
-	tokenCmd.PersistentFlags().StringVar(&tokenParams.provider, "provider", common.ProviderLocal, "user provider [local|google|ovh]")
+	tokenCmd.PersistentFlags().StringVar(&tokenParams.provider, "provider", common.ProviderLocal, "user provider [local|google|ovh|oidc]")
 	tokenCmd.PersistentFlags().StringVar(&tokenParams.login, "login", "", "user login")
 
 	tokenCmd.AddCommand(createTokenCmd)

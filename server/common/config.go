@@ -94,6 +94,16 @@ type Configuration struct {
 	OvhAPIKey            string   `json:"-"`
 	OvhAPISecret         string   `json:"-"`
 
+	LocalAuthentication bool `json:"localAuthentication"`
+	DisableLocalLogin   bool `json:"-"`
+
+	OIDCAuthentication bool     `json:"oidcAuthentication"`
+	OIDCClientID       string   `json:"-"`
+	OIDCClientSecret   string   `json:"-"`
+	OIDCProviderURL    string   `json:"-"`
+	OIDCProviderName   string   `json:"oidcProviderName"`
+	OIDCValidDomains   []string `json:"-"`
+
 	MetadataBackendConfig map[string]interface{} `json:"-"`
 
 	DataBackend       string                 `json:"-"`
@@ -134,6 +144,8 @@ func NewConfiguration() (config *Configuration) {
 	config.ProtectedByPassword = true
 
 	config.OvhAPIEndpoint = "https://eu.api.ovh.com/1.0"
+
+	config.OIDCProviderName = "OpenID"
 
 	config.DataBackend = "file"
 
@@ -211,6 +223,8 @@ func (config *Configuration) Initialize() (err error) {
 
 	config.GoogleAuthentication = config.FeatureAuthentication != FeatureDisabled && config.GoogleAPIClientID != "" && config.GoogleAPISecret != ""
 	config.OvhAuthentication = config.FeatureAuthentication != FeatureDisabled && config.OvhAPIKey != "" && config.OvhAPISecret != ""
+	config.OIDCAuthentication = config.FeatureAuthentication != FeatureDisabled && config.OIDCClientID != "" && config.OIDCClientSecret != "" && config.OIDCProviderURL != ""
+	config.LocalAuthentication = config.FeatureAuthentication != FeatureDisabled && !config.DisableLocalLogin
 
 	if config.DownloadDomain != "" {
 		strings.Trim(config.DownloadDomain, "/ ")
@@ -445,6 +459,19 @@ func (config *Configuration) String() string {
 			}
 		} else {
 			str += "OVH authentication : disabled\n"
+		}
+
+		if config.OIDCAuthentication {
+			str += fmt.Sprintf("OIDC authentication : enabled (%s)\n", config.OIDCProviderName)
+			str += fmt.Sprintf("OIDC provider URL : %s\n", config.OIDCProviderURL)
+		} else {
+			str += "OIDC authentication : disabled\n"
+		}
+
+		if config.LocalAuthentication {
+			str += "Local authentication : enabled\n"
+		} else {
+			str += "Local authentication : disabled\n"
 		}
 	}
 
