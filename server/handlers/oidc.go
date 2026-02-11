@@ -197,9 +197,9 @@ func OIDCLogin(ctx *context.Context, resp http.ResponseWriter, req *http.Request
 }
 
 type oidcUserInfo struct {
-	Sub              string `json:"sub"`
-	Email            string `json:"email"`
-	Name             string `json:"name"`
+	Sub               string `json:"sub"`
+	Email             string `json:"email"`
+	Name              string `json:"name"`
 	PreferredUsername string `json:"preferred_username"`
 }
 

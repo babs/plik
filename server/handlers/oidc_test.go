@@ -429,9 +429,9 @@ func TestOIDCCallbackUpdateUserFields(t *testing.T) {
 	require.NoError(t, err, "unable to create test user")
 
 	oidcUser := oidcUserInfo{
-		Sub:              "updateuser",
-		Email:            "new@root.gg",
-		Name:             "New Name",
+		Sub:               "updateuser",
+		Email:             "new@root.gg",
+		Name:              "New Name",
 		PreferredUsername: "newlogin",
 	}
 
