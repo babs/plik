@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - master
+      - local-master
 
 jobs:
   test:
