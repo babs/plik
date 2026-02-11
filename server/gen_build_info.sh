@@ -11,7 +11,7 @@ if [[ ! -f "$FILE" ]]; then
     exit 1
 fi
 
-version=${VERSION:-$(git describe --tags --abbrev=0)}
+version=${VERSION:-$(git describe --tags --abbrev=0 2>/dev/null || true)}
 version=${version#v}
 if [[ -z "$version" ]]; then
     echo "version not found"
@@ -37,7 +37,7 @@ sh=`git rev-list --pretty=format:%h HEAD --max-count=1 | sed '1s/commit /full_re
 eval "$sh"  # Sets the full_rev & short_rev variables.
 
 # get git version tag
-tag=$(git show-ref --tags | grep -E "refs/tags/$version$" | cut -d " " -f1)
+tag=$(git show-ref --tags | grep -E "refs/tags/v?$version$" | cut -d " " -f1)
 if [[ $tag = $full_rev ]]; then
     isRelease=true
 fi
