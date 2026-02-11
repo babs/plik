@@ -1,7 +1,7 @@
 [![Mentioned in Awesome Go](https://awesome.re/mentioned-badge.svg)](https://github.com/avelino/awesome-go)
 [![Build](https://github.com/root-gg/plik/actions/workflows/master.yaml/badge.svg)](https://github.com/root-gg/plik/actions/workflows/master.yaml)
 [![Go Report](https://img.shields.io/badge/Go_report-A+-brightgreen.svg)](http://goreportcard.com/report/root-gg/plik)
-[![Docker Pulls](https://img.shields.io/docker/pulls/rootgg/plik.svg)](https://hub.docker.com/r/rootgg/plik)
+[![GHCR](https://img.shields.io/badge/ghcr.io-root--gg%2Fplik-blue)](https://github.com/root-gg/plik/pkgs/container/plik)
 [![GoDoc](https://godoc.org/github.com/root-gg/plik?status.svg)](https://godoc.org/github.com/root-gg/plik)
 [![License](https://img.shields.io/badge/License-MIT-blue.svg)](http://opensource.org/licenses/MIT)
 
@@ -71,9 +71,9 @@ $ cd server && ./plikd
 
 ##### Docker <a name="docker"></a>
 Plik comes with multiarch docker images built for linux amd64/i386/arm/arm64: 
- - rootgg/plik:latest (latest release)
- - rootgg/plik:{version} (release)
- - rootgg/plik:dev (latest commit of master)
+ - ghcr.io/root-gg/plik:latest (latest release)
+ - ghcr.io/root-gg/plik:{version} (release)
+ - ghcr.io/root-gg/plik:dev (latest commit of master)
 
 See the [Plik Docker reference](documentation/docker.md)
 
@@ -141,7 +141,7 @@ The interface can be customized in a few ways:
 
 If you are using docker the files are located at `/home/plik/webapp/dist` in the container. For example:
 ```sh
-$ docker run -t -d -p 8080:8080 -v my_background.jpg:/home/plik/webapp/dist/img/background.jpg rootgg/plik
+$ docker run -t -d -p 8080:8080 -v my_background.jpg:/home/plik/webapp/dist/img/background.jpg ghcr.io/root-gg/plik
 ```
 
 ### Cli client <a name="cli-client"></a>

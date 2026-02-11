@@ -36,7 +36,7 @@
                     &nbsp;
                     <a ng-if="isFeatureEnabled('authentication') && user && user.admin" href="#/admin"><i class="fa fa-wrench"></i> Admin&nbsp;</a>
                     <a ng-if="isFeatureEnabled('clients')" href="#/clients"><i class="fa fa-keyboard-o"></i> Command line client</a>
-                    <a ng-if="isFeatureEnabled('github')" href="https://github.com/root-gg/plik/tree/master"><i class="fa fa-github"></i> Source code</a>
+                    <a ng-if="isFeatureEnabled('github') && config.sourceUrl" ng-href="{{config.sourceUrl}}"><i class="fa fa-github"></i> Source code</a>
                 </div>
                 <!-- TOP MENU ( mobile ) -->
                 <div class="col-sm-9 text-center hidden-sm hidden-md hidden-lg">

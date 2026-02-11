@@ -56,6 +56,7 @@ type Configuration struct {
 	EnhancedWebSecurity bool     `json:"-"`
 	SessionTimeout      string   `json:"-"`
 	AbuseContact        string   `json:"abuseContact"`
+	SourceURL           string   `json:"sourceUrl"`
 	WebappDirectory     string   `json:"-"`
 	ClientsDirectory    string   `json:"-"`
 	ChangelogDirectory  string   `json:"-"`
@@ -205,6 +206,8 @@ func (config *Configuration) Initialize() (err error) {
 	if err != nil {
 		return err
 	}
+
+	config.SourceURL = GetBuildInfo().SourceURL
 
 	config.GoogleAuthentication = config.FeatureAuthentication != FeatureDisabled && config.GoogleAPIClientID != "" && config.GoogleAPISecret != ""
 	config.OvhAuthentication = config.FeatureAuthentication != FeatureDisabled && config.OvhAPIKey != "" && config.OvhAPISecret != ""

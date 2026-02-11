@@ -73,6 +73,13 @@ func TestIsWhitelisted(t *testing.T) {
 	require.True(t, config.IsWhitelisted(net.ParseIP("1234::42").To16()), "no be whitelisted")
 }
 
+func TestInitializeConfigSourceURL(t *testing.T) {
+	config := NewConfiguration()
+	err := config.Initialize()
+	require.NoError(t, err, "unable to initialize config")
+	require.Equal(t, GetBuildInfo().SourceURL, config.SourceURL, "sourceUrl should be set from build info")
+}
+
 func TestInitializeConfigAuthentication(t *testing.T) {
 	config := NewConfiguration()
 	config.GoogleAPIClientID = "google_api_client_id"

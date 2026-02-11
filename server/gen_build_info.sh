@@ -12,6 +12,7 @@ if [[ ! -f "$FILE" ]]; then
 fi
 
 version=${VERSION:-$(git describe --tags --abbrev=0)}
+version=${version#v}
 if [[ -z "$version" ]]; then
     echo "version not found"
     exit 1
@@ -50,6 +51,11 @@ is_mint_repo() {
 }
 if is_mint_repo; then
     isMint=true
+fi
+
+# Source URL from environment or git remote
+if [[ -z "${SOURCE_URL:-}" ]]; then
+  SOURCE_URL=$(git remote get-url origin 2>/dev/null || echo "")
 fi
 
 if [[ "$output" == "info" ]]; then
@@ -122,6 +128,8 @@ json=$(cat << EOF
   "gitFullRevision" : "$full_rev",
   "isRelease" : $isRelease,
   "isMint" : $isMint,
+
+  "sourceUrl" : "$SOURCE_URL",
 
   "clients" : $clients_json,
   "releases" : $releases_json

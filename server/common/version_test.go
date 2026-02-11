@@ -48,7 +48,9 @@ func TestGetBuildInfoString(t *testing.T) {
 
 func TestGetBuildInfoStringSanitize(t *testing.T) {
 	buildInfo := GetBuildInfo()
+	buildInfo.SourceURL = "https://github.com/test/repo"
 	buildInfo.Sanitize()
 	v := buildInfo.String()
 	require.Equal(t, fmt.Sprintf("v%s", buildInfo.Version), v, "invalid build string")
+	require.Empty(t, buildInfo.SourceURL, "sourceUrl should be cleared by sanitize")
 }
