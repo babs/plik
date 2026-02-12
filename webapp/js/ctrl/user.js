@@ -3,7 +3,7 @@ plik.controller('UserController', ['$scope', 'args', '$config', '$q',
     function ($scope, args, $config, $q) {
         $scope.title = 'User :';
 
-        $scope.providers = ["local", "google", "ovh"];
+        $scope.providers = ["local", "google", "ovh", "oidc"];
         $scope.edit = false;
         $scope.user = {};
         $scope.warning = null;
@@ -57,7 +57,7 @@ plik.controller('UserController', ['$scope', 'args', '$config', '$q',
                 $scope.maxUserSize = maxUserSize;
             }
         }
-        
+
         // whenReady ensure that the scope has been initialized especially :
         // $scope.config, $scope.user, $scope.mode, $scope.upload, $scope.files, ...
         $scope.ready = $q.all([$scope.configReady, $scope.userReady]);

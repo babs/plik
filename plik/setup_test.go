@@ -25,6 +25,9 @@ var dataBackend data.Backend
 // Default metadata backend config
 var metadataBackendConfig = &metadata.Config{Driver: "sqlite3", ConnectionString: "/tmp/plik.test.db", EraseFirst: true}
 
+// testConfig holds the full configuration loaded from PLIKD_CONFIG (if set)
+var testConfig *common.Configuration
+
 func TestMain(m *testing.M) {
 	var err error
 
@@ -38,7 +41,6 @@ func TestMain(m *testing.M) {
 		os.Exit(code)
 	}()
 
-	var testConfig *common.Configuration
 	testConfigPath := os.Getenv("PLIKD_CONFIG")
 	if testConfigPath != "" {
 		fmt.Println("loading test config : " + testConfigPath)
@@ -63,6 +65,7 @@ func TestMain(m *testing.M) {
 					fmt.Printf("Unable to deserialize data_backend_config : %s\n", err)
 					os.Exit(1)
 				}
+				testConfig.DataBackendConfig = dataBackendConfig
 			}
 		}
 	}
@@ -114,6 +117,17 @@ func newPlikServerAndClient() (ps *server.PlikServer, pc *Client) {
 	config.ListenPort = common.APIMockServerDefaultPort
 	config.AutoClean(false)
 	//config.Debug = true
+
+	// Copy OIDC settings from test config if available
+	// Only OIDC-specific fields are copied here; FeatureAuthentication and
+	// DisableLocalLogin are intentionally left for each test to set as needed.
+	if testConfig != nil {
+		config.OIDCClientID = testConfig.OIDCClientID
+		config.OIDCClientSecret = testConfig.OIDCClientSecret
+		config.OIDCProviderURL = testConfig.OIDCProviderURL
+		config.OIDCProviderName = testConfig.OIDCProviderName
+	}
+
 	_ = config.Initialize()
 	ps = server.NewPlikServer(config)
 
@@ -130,11 +144,6 @@ func newPlikServerAndClient() (ps *server.PlikServer, pc *Client) {
 
 // /!\ Backends ARE NOT automatically cleared between tests /!\
 func start(ps *server.PlikServer) (err error) {
-	//common.CheckHTTPServer(ps.GetConfig().ListenPort)
-	//if err == nil {
-	//	return fmt.Errorf("plik server is already running")
-	//}
-
 	err = ps.Start()
 	if err != nil {
 		return err
@@ -154,10 +163,6 @@ func shutdown(ps *server.PlikServer) {
 	if err != nil {
 		panic("unable to shutdown server " + err.Error())
 	}
-	//common.CheckHTTPServer(ps.GetConfig().ListenPort)
-	//if err == nil {
-	//	panic("still able to join plik server after shutdown")
-	//}
 }
 
 type LockedReader struct {
